@@ -205,30 +205,36 @@ if($continue){
 		
 	foreach ($_POST as $key => $value)
 	{
-		if(is_numeric($key)){		
-		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
+		if (!preg_match('/^(\d+)_qty$/', $key, $matches)) {
+			continue;
+		}
+		$item_id = intval($matches[1]);
+		$quantity = intval($value);
+		if ($quantity <= 0) {
+			continue;
+		}
+		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $item_id");
 		while($row = mysqli_fetch_array($result))
 		{
 			$price = $row['price'];
 			$item_name = $row['name'];
 			$item_id = $row['id'];
 		}
-			$price = $value*$price;
+		$line_total = $quantity * $price;
 			    echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
                 <p class="collections-title"><strong>#'.$item_id.' </strong>'.$item_name.'</p>
             </div>
             <div class="col s2">
-                <span>'.$value.' Pieces</span>
+                <span>'.$quantity.' Pieces</span>
             </div>
             <div class="col s3">
-                <span>Rs. '.$price.'</span>
+                <span>Rs. '.$line_total.'</span>
             </div>
         </div>
     </li>';
-		$total = $total + $price;
-	}
+		$total += $line_total;
 	}
     echo '<li class="collection-item">
         <div class="row">
@@ -263,15 +269,16 @@ if($continue){
 <?php
 foreach ($_POST as $key => $value)
 {
-	if(is_numeric($key)){
-		echo '<input type="hidden" name="'.$key.'" value="'.$value.'">';
+	if (!preg_match('/^(\d+)_qty$/', $key, $matches)) {
+		continue;
 	}
+	echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
 }
 ?>
 <input type="hidden" name="payment_type" value="<?php echo $_POST['payment_type'];?>">
 <input type="hidden" name="address" value="<?php echo htmlspecialchars($_POST['address']);?>">
 <?php if (isset($_POST['description'])) { echo'<input type="hidden" name="description" value="'.htmlspecialchars($_POST['description']).'">';}?>
-<?php if($_POST['payment_type'] == 'Wallet') echo '<input type="hidden" name="balance" value="<?php echo ($balance-$total);?>">'; ?>
+<?php if($_POST['payment_type'] == 'Wallet') echo '<input type="hidden" name="balance" value="'.($balance-$total).'">'; ?>
 <input type="hidden" name="total" value="<?php echo $total;?>">
 <div class="input-field col s12">
 <button class="btn cyan waves-effect waves-light right" type="submit" name="action" <?php if($_POST['payment_type'] == 'Wallet') {if ($balance-$total < 0) {echo 'disabled'; }}?>>Confirm Order
