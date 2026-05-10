@@ -264,10 +264,10 @@ $verified = $row['verified'];
 					  <?php
 					  	foreach ($_POST as $key => $value)
 						{
-							if($key == 'action' || $value == ''){
-								break;
+							if ($key === 'action') {
+								continue;
 							}
-							echo '<input name="'.$key.'" type="hidden" value="'.$value.'">';
+							echo '<input name="'.htmlspecialchars($key).'" type="hidden" value="'.htmlspecialchars($value).'">';
 						}
 					  ?>
                     </form>
@@ -298,33 +298,36 @@ $verified = $row['verified'];
 		
 	foreach ($_POST as $key => $value)
 	{
-		if($value == ''){
-			break;
+		if (!preg_match('/^(\d+)_qty$/', $key, $matches)) {
+			continue;
 		}
-		if(is_numeric($key)){
-		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
+		$item_id = intval($matches[1]);
+		$quantity = intval($value);
+		if ($quantity <= 0) {
+			continue;
+		}
+		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $item_id");
 		while($row = mysqli_fetch_array($result))
 		{
 			$price = $row['price'];
 			$item_name = $row['name'];
 			$item_id = $row['id'];
 		}
-			$price = $value*$price;
-			    echo '<li class="collection-item">
+		$line_total = $quantity * $price;
+		    echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
                 <p class="collections-title"><strong>#'.$item_id.' </strong>'.$item_name.'</p>
             </div>
             <div class="col s2">
-                <span>'.$value.' Pieces</span>
+                <span>'.$quantity.' Pieces</span>
             </div>
             <div class="col s3">
-                <span>Rs. '.$price.'</span>
+                <span>Rs. '.$line_total.'</span>
             </div>
         </div>
     </li>';
-		$total = $total + $price;
-	}
+		$total += $line_total;
 	}
     echo '<li class="collection-item">
         <div class="row">
