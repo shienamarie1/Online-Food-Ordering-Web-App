@@ -38,7 +38,7 @@ else{
   <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
   <style>
     body {
-      background: linear-gradient(135deg, #1b2735 0%, #0f4c81 100%);
+      background: linear-gradient(135deg, #e2e6ea 0%, #feffff 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -57,7 +57,7 @@ else{
     }
     #login-page .login-form-text {
       font-size: 1.15rem;
-      color: #263238;
+      color: #10181c;
       margin-bottom: 0;
     }
     #login-page header {
@@ -69,7 +69,7 @@ else{
       box-shadow: none;
     }
     #login-page .nav > li > a {
-      color: #ffffff;
+      color: #0a0909;
       font-weight: 500;
     }
     #login-page .nav > li > a:hover {
