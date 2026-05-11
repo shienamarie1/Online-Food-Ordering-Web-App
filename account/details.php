@@ -43,13 +43,13 @@ $username = $row['username'];
   <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
    <style type="text/css">
   body {
-    background: linear-gradient(135deg, #0f3d66 0%, #1c5f94 40%, #0b2f4d 100%);
+    background: #f8f9fb;
     min-height: 100vh;
     color: #263238;
   }
   #header .navbar-color {
-    background: rgba(2, 45, 85, 0.95);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
   }
   .nav-wrapper .brand-logo img {
     max-height: 42px;
@@ -58,7 +58,7 @@ $username = $row['username'];
     display: inline-block;
     margin-left: 10px;
     font-size: 1.1rem;
-    color: #ffffff;
+    color: #333333;
     font-weight: 600;
     vertical-align: middle;
   }
@@ -69,67 +69,70 @@ $username = $row['username'];
     max-width: 1180px;
   }
   #breadcrumbs-wrapper {
-    background: rgba(255, 255, 255, 0.06);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   }
   .breadcrumbs-title {
-    color: #f5f5f5;
+    color: #212121;
   }
   .caption {
-    color: #eceff1;
+    color: #616161;
   }
   .card-panel {
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
     padding: 28px 24px;
   }
   .card-panel h4.header {
-    color: #0d3a66;
+    color: #212121;
     margin-top: 0;
   }
   .input-field .prefix {
-    color: #0d3a66;
+    color: #757575;
   }
   .input-field input[type=text],
   .input-field input[type=email],
   .input-field input[type=number],
   .input-field textarea {
-    border-bottom: 1px solid rgba(14, 76, 137, 0.25);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   }
   .input-field label {
-    color: #546e7a;
+    color: #616161;
   }
   .input-field input[type=text]:focus + label,
   .input-field input[type=email]:focus + label,
   .input-field input[type=number]:focus + label,
   .input-field textarea:focus + label {
-    color: #1565c0;
+    color: #333333;
   }
   .input-field input[type=text]:focus,
   .input-field input[type=email]:focus,
   .input-field input[type=number]:focus,
   .input-field textarea:focus {
-    border-bottom: 1px solid #1565c0;
-    box-shadow: 0 1px 0 0 #1565c0;
+    border-bottom: 1px solid #333333;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.16);
   }
   .btn.cyan {
     border-radius: 999px;
-    background: #1565c0;
-    box-shadow: 0 12px 24px rgba(21, 101, 192, 0.26);
+    background: #ffffff;
+    color: #212121;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
   }
   .btn.cyan:hover {
-    background: #0d47a1;
+    background: #f1f1f1;
   }
   .page-footer {
-    background: #102a44;
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
   .page-footer .container span,
   .page-footer .container a {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(0, 0, 0, 0.7);
   }
   .page-footer .container a:hover {
-    color: #ffffff;
+    color: rgba(0, 0, 0, 0.9);
   }
   .input-field div.error{
     position: relative;
