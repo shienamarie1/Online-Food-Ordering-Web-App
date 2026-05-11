@@ -36,7 +36,50 @@ else{
 
   <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
   <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
-  
+  <style>
+    body {
+      background: linear-gradient(135deg, #1b2735 0%, #0f4c81 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #login-page {
+      width: 100%;
+      max-width: 430px;
+      padding: 24px;
+    }
+    #login-page .card-panel {
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.18);
+      padding: 32px 28px;
+    }
+    #login-page .login-form-text {
+      font-size: 1.15rem;
+      color: #263238;
+      margin-bottom: 0;
+    }
+    #login-page header {
+      margin-bottom: 20px;
+    }
+    #login-page header nav {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    #login-page .nav > li > a {
+      color: #ffffff;
+      font-weight: 500;
+    }
+    #login-page .nav > li > a:hover {
+      color: #ffca28;
+    }
+    #login-page .btn {
+      border-radius: 999px;
+      font-weight: 600;
+    }
+  </style>
 </head>
 
 <body class="cyan">

@@ -36,6 +36,36 @@ else{
   <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
 
     <style type="text/css">
+  body {
+    background: linear-gradient(135deg, #1f2a44 0%, #1d6fa1 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #login-page {
+    width: 100%;
+    max-width: 520px;
+    padding: 24px;
+  }
+  #login-page .card-panel {
+    border-radius: 24px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 28px 80px rgba(0,0,0,0.18);
+    padding: 34px 30px;
+  }
+  #login-page h4 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: #263238;
+  }
+  #login-page p.center {
+    color: #546e7a;
+  }
+  .btn {
+    border-radius: 999px;
+    font-weight: 600;
+  }
   .input-field div.error{
     position: relative;
     top: -1rem;
@@ -162,7 +192,7 @@ else{
         </div>		
         <div class="row">
           <div class="input-field col s12">
-			<a href="javascript:void(0);" onclick="document.getElementById('formValidate').submit();" class="btn waves-effect waves-light col s12">Login</a>
+		<a href="javascript:void(0);" onclick="document.getElementById('formValidate').submit();" class="btn waves-effect waves-light col s12">Register</a>
           </div>
           <div class="input-field col s12">
             <p class="margin center medium-small sign-up">Already have an account? <a href="login.php">Login</a></p>
