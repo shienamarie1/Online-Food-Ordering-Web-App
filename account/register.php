@@ -62,6 +62,11 @@ else{
   #login-page p.center {
     color: #546e7a;
   }
+  #login-page header nav {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
   .btn {
     border-radius: 999px;
     font-weight: 600;
