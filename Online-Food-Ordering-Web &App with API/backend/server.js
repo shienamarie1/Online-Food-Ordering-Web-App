@@ -154,6 +154,11 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
+app.get("/health", (req, res) => {
+  res.json({ success: true, status: "ok" });
+});
+
 app.get("/user/:id", (req, res) => {
 
   const id = req.params.id;

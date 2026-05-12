@@ -1,10 +1,6 @@
 <?php  
 session_start(); 
-$offlineFlag = __DIR__ . '/offline.flag';
-if (file_exists($offlineFlag)) {
-    header("Location: maintenance.php");
-    exit();
-}
+require_once 'includes/connect.php';
 if(isset($_SESSION['admin_sid']) || isset($_SESSION['customer_sid']))
 {
 	header("location:index.php");
