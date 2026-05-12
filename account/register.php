@@ -1,5 +1,10 @@
 <?php  
 session_start(); 
+$offlineFlag = __DIR__ . '/offline.flag';
+if (file_exists($offlineFlag)) {
+    header("Location: maintenance.php");
+    exit();
+}
 if(isset($_SESSION['admin_sid']) || isset($_SESSION['customer_sid']))
 {
 	header("location:index.php");
@@ -37,7 +42,7 @@ else{
 
     <style type="text/css">
   body {
-    background: linear-gradient(135deg, #1f2a44 0%, #1d6fa1 100%);
+     background: linear-gradient(135deg, #e2e6ea 0%, #feffff 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
