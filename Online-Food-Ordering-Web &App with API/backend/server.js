@@ -316,6 +316,93 @@ const sql = `
     res.json(result);
   });
 });
+
+// =======================
+// ITEMS
+// =======================
+app.get('/items', (req, res) => {
+  db.query('SELECT id, name, price, stock FROM items WHERE deleted=0', (err, rows) => {
+    if (err) return res.status(500).json({ success:false, message: err.message });
+    res.json(rows);
+  });
+});
+
+app.get('/item/:id', (req, res) => {
+  const id = req.params.id;
+  db.query('SELECT id, name, price, stock FROM items WHERE id=?', [id], (err, rows) => {
+    if (err) return res.status(500).json({ success:false, message: err.message });
+    if (rows.length === 0) return res.status(404).json(null);
+    res.json(rows[0]);
+  });
+});
+
+// =======================
+// CREATE ORDER
+// =======================
+app.post('/orders/create', (req, res) => {
+  const { customer_id, payment_type, address, total, description, items } = req.body;
+
+  if (!customer_id || !items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ success:false, message: 'Invalid payload' });
+  }
+
+  db.beginTransaction(err => {
+    if (err) return res.status(500).json({ success:false, message: err.message });
+
+    const orderSql = 'INSERT INTO orders (customer_id, payment_type, address, total, description) VALUES (?, ?, ?, ?, ?)';
+    db.query(orderSql, [customer_id, payment_type || 'Wallet', address || '', total || 0, description || ''], (err, result) => {
+      if (err) return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+
+      const orderId = result.insertId;
+      let remaining = items.length;
+      let hadError = false;
+
+      items.forEach(it => {
+        const itemId = it.item_id || it.id;
+        const qty = parseInt(it.quantity || it.qty || 1, 10);
+        const price = parseInt(it.price || 0, 10);
+
+        const detailSql = 'INSERT INTO order_details (order_id, item_id, quantity, price) VALUES (?, ?, ?, ?)';
+        db.query(detailSql, [orderId, itemId, qty, price], (err) => {
+          if (hadError) return;
+          if (err) {
+            hadError = true;
+            return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+          }
+
+          // update stock
+          db.query('UPDATE items SET stock = stock - ? WHERE id=?', [qty, itemId], (err) => {
+            if (err) {
+              hadError = true;
+              return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+            }
+
+            remaining -= 1;
+            if (remaining === 0 && !hadError) {
+              // handle wallet deduction if needed
+              if ((payment_type || 'Wallet') === 'Wallet') {
+                db.query('UPDATE wallet_details wd JOIN wallet w ON wd.wallet_id=w.id SET wd.balance = wd.balance - ? WHERE w.customer_id=?', [total, customer_id], (err) => {
+                  if (err) {
+                    return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+                  }
+                  db.commit(err => {
+                    if (err) return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+                    res.json({ success:true, order_id: orderId });
+                  });
+                });
+              } else {
+                db.commit(err => {
+                  if (err) return db.rollback(() => res.status(500).json({ success:false, message: err.message }));
+                  res.json({ success:true, order_id: orderId });
+                });
+              }
+            }
+          });
+        });
+      });
+    });
+  });
+});
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });

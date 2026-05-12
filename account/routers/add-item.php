@@ -12,5 +12,5 @@ if(!$con)
     echo mysqli_error($con);
 }
 var_dump($con->error);
-// header("location: ../admin-page.php");
+ header("location: ../admin-page.php");
 ?>

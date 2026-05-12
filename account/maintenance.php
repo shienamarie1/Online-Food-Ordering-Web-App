@@ -1,4 +1,4 @@
-<?php
+ <?php
 // Simple offline maintenance page for the account system.
 ?>
 <!DOCTYPE html>
@@ -52,8 +52,47 @@
 <body>
   <div class="offline-card">
     <h1>System Offline</h1>
-    <p>The account system is currently unavailable because the server has been turned off.</p>
-    <a href="javascript:location.reload();">Try Again</a>
+    <p>The account system is currently unavailable because the server is not responding.</p>
+    <div style="display:flex;gap:12px;align-items:center;justify-content:center;">
+      <button id="tryBtn" style="padding:12px 24px;border-radius:999px;background:#111;color:#fff;border:0;cursor:pointer;font-weight:600;">Try Again</button>
+      <span id="status" style="color:#666;font-size:0.95rem;"></span>
+    </div>
   </div>
+  <script>
+    const btn = document.getElementById('tryBtn');
+    const status = document.getElementById('status');
+
+    function setStatus(text, temporary = true){
+      status.textContent = text;
+      if (temporary) setTimeout(()=>{ status.textContent = ''; }, 3500);
+    }
+
+    async function checkAndRedirect(){
+      setStatus('Checking server...', false);
+      try {
+        const res = await fetch('test_node_health.php', { cache: 'no-store' });
+        if (!res.ok) throw new Error('proxy-failed');
+        const data = await res.json();
+        if (data.alive) {
+          // Node server is responding — go to login
+          window.location.href = 'login.php';
+          return;
+        }
+        setStatus('Still offline — server not responding.');
+      } catch (e) {
+        setStatus('Still offline — unable to reach server.');
+      }
+    }
+
+    btn.addEventListener('click', () => {
+      checkAndRedirect();
+    });
+
+    // optional: try once on load
+    window.addEventListener('load', () => {
+      // small delay so message is visible
+      setTimeout(() => { checkAndRedirect(); }, 600);
+    });
+  </script>
 </body>
 </html>
