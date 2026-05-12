@@ -68,14 +68,15 @@ function checkBonus(rider_id) {
 // =======================
 app.post("/register", (req, res) => {
 
-  const { name, username, password } = req.body;
+  const { name, username, password, role } = req.body;
+  const userRole = role || 'customer';
 
   const sql = `
     INSERT INTO users (name, username, password, role)
-    VALUES (?, ?, ?, 'rider')
+    VALUES (?, ?, ?, ?)
   `;
 
-  db.query(sql, [name, username, password], (err, result) => {
+  db.query(sql, [name, username, password, userRole], (err, result) => {
 
     if (err) return res.json({ success: false, message: err.message });
 
@@ -89,7 +90,7 @@ app.post("/register", (req, res) => {
         "INSERT INTO wallet_details (wallet_id, balance) VALUES (?, 0)",
         [w.insertId],
         () => {
-          res.json({ success: true, message: "Rider created with wallet" });
+          res.json({ success: true, userId: userId, role: userRole });
         }
       );
     });

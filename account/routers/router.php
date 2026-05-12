@@ -1,50 +1,52 @@
 <?php
 include '../includes/connect.php';
-$success=false;
 
-$username = $_POST['username'];
-$password = $_POST['password'];
+// Delegate authentication to the Node backend so PHP sessions are created
+// only when the Node API validates credentials.
+$username = isset($_POST['username']) ? $_POST['username'] : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
 
-$result = mysqli_query($con, "SELECT * FROM users WHERE username='$username' AND password='$password' AND role='Administrator' AND not deleted;");
-while($row = mysqli_fetch_array($result))
-{
-	$success = true;
-	$user_id = $row['id'];
-	$name = $row['name'];
-	$role= $row['role'];
-}
-if($success == true)
-{	
-	session_start();
-	$_SESSION['admin_sid']=session_id();
-	$_SESSION['user_id'] = $user_id;
-	$_SESSION['role'] = $role;
-	$_SESSION['name'] = $name;
+// Call Node /login
+$nodeUrl = 'http://127.0.0.1:3000/login';
+$ch = curl_init($nodeUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['username'=>$username, 'password'=>$password]));
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+curl_setopt($ch, CURLOPT_TIMEOUT, 4);
+$resp = @curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlErr = curl_error($ch);
+curl_close($ch);
 
-	header("location: ../admin-page.php");
-}
-else
-{
-	$result = mysqli_query($con, "SELECT * FROM users WHERE username='$username' AND password='$password' AND role='Customer' AND not deleted;");
-	while($row = mysqli_fetch_array($result))
-	{
-	$success = true;
-	$user_id = $row['id'];
-	$name = $row['name'];
-	$role= $row['role'];
-	}
-	if($success == true)
-	{
+if ($resp && $httpCode === 200) {
+	$data = json_decode($resp, true);
+	if (isset($data['success']) && $data['success'] === true && isset($data['user'])) {
+		$user = $data['user'];
+		$user_id = isset($user['id']) ? $user['id'] : null;
+		$name = isset($user['name']) ? $user['name'] : '';
+		$role = isset($user['role']) ? $user['role'] : '';
+
 		session_start();
-		$_SESSION['customer_sid']=session_id();
+		if (strtolower($role) === 'administrator') {
+			$_SESSION['admin_sid'] = session_id();
+		} else {
+			$_SESSION['customer_sid'] = session_id();
+		}
 		$_SESSION['user_id'] = $user_id;
 		$_SESSION['role'] = $role;
-		$_SESSION['name'] = $name;			
-		header("location: ../index.php");
-	}
-	else
-	{
-		header("location: ../login.php");
+		$_SESSION['name'] = $name;
+
+		if (strtolower($role) === 'administrator') {
+			header("location: ../admin-page.php");
+			exit();
+		} else {
+			header("location: ../index.php");
+			exit();
+		}
 	}
 }
+
+// Fallback: on any failure, redirect back to login
+header("location: ../login.php");
 ?>

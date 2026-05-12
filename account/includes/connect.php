@@ -18,41 +18,59 @@ if (file_exists($offlineFlag)) {
 
 function isNodeServerAlive() {
     $url = 'http://127.0.0.1:3000/health';
-    $result = false;
+    $logFile = __DIR__ . '/../debug_health.log';
+    $entry = [
+        'time' => date('c'),
+        'url' => $url,
+        'method' => null,
+        'http_code' => null,
+        'response' => null,
+        'error' => null,
+    ];
 
+    // Try cURL first
     if (function_exists('curl_version')) {
+        $entry['method'] = 'curl';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Accept: application/json"]);
         $result = @curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErr = curl_error($ch);
         curl_close($ch);
-        if ($httpCode !== 200) {
-            return false;
-        }
-    } else {
-        $options = [
-            'http' => [
-                'method' => 'GET',
-                'timeout' => 1,
-                'header' => "Accept: application/json\r\n"
-            ]
-        ];
-        $context = stream_context_create($options);
-        $result = @file_get_contents($url, false, $context);
+
+        $entry['http_code'] = $httpCode;
+        $entry['response'] = $result;
+        $entry['error'] = $curlErr ?: null;
+
+        file_put_contents($logFile, json_encode($entry) . PHP_EOL, FILE_APPEND);
+
+        return ($httpCode === 200 && $result);
     }
 
-    if (!$result) {
-        return false;
-    }
+    // Fallback to file_get_contents (allow_url_fopen must be enabled)
+    $entry['method'] = 'file_get_contents';
+    $options = [
+        'http' => [
+            'method' => 'GET',
+            'timeout' => 2,
+            'header' => "Accept: application/json\r\n"
+        ]
+    ];
+    $context = stream_context_create($options);
+    $result = @file_get_contents($url, false, $context);
+    $entry['response'] = $result;
+    file_put_contents($logFile, json_encode($entry) . PHP_EOL, FILE_APPEND);
 
-    $data = @json_decode($result, true);
-    return is_array($data) && isset($data['success']) && $data['success'] === true;
+    return ($result !== false);
 }
 
 if (!isNodeServerAlive()) {
+    // write a short note to the debug log for visibility
+    $note = date('c') . " - Node healthcheck failed; redirecting to maintenance" . PHP_EOL;
+    @file_put_contents(__DIR__ . '/../debug_health.log', $note, FILE_APPEND);
     redirectToMaintenance();
 }
 
