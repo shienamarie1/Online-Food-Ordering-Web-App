@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F6FA">
+
+    <!-- SCROLL CONTENT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- HEADER -->
+
+
+            <!-- CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:elevation="6dp"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/txtCustomerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer Name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#222"/>
+
+                <TextView
+                    android:id="@+id/txtAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delivery Address"
+                    android:layout_marginTop="6dp"
+                    android:textColor="#555"/>
+
+                <TextView
+                    android:id="@+id/txtPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone Number"
+                    android:layout_marginTop="6dp"
+                    android:textColor="#555"/>
+
+                <TextView
+                    android:id="@+id/txtTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total: ₱0.00"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000"
+                    android:layout_marginTop="10dp"/>
+
+                <!-- BUTTONS -->
+                <Button
+                    android:id="@+id/btnNavigate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Maps"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="#FF6B00"
+                    android:textColor="#FFFFFF"/>
+
+                <Button
+                    android:id="@+id/btnDelivered"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mark as Delivered"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#2E7D32"
+                    android:textColor="#FFFFFF"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- FIXED BOTTOM NAV -->
+
+
+
+
+
+
+</RelativeLayout>
